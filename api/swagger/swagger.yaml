@@ -1,0 +1,996 @@
+basePath: /admin/v1
+consumes:
+- application/json
+- application/x-www-form-urlencoded
+definitions:
+  AdminMenu:
+    properties:
+      children:
+        items:
+          $ref: '#/definitions/AdminMenu'
+        type: array
+        x-go-name: Children
+      component:
+        type: string
+        x-go-name: Component
+      created_at:
+        $ref: '#/definitions/LocalTime'
+      icon:
+        type: string
+        x-go-name: Icon
+      id:
+        format: uint64
+        type: integer
+        x-go-name: ID
+      is_disabled:
+        format: uint8
+        type: integer
+        x-go-name: IsDisabled
+      name:
+        type: string
+        x-go-name: Name
+      parent_id:
+        format: uint64
+        type: integer
+        x-go-name: ParentID
+      path:
+        type: string
+        x-go-name: Path
+      permission:
+        type: string
+        x-go-name: Permission
+      sort:
+        format: uint64
+        type: integer
+        x-go-name: Sort
+      type:
+        format: uint8
+        type: integer
+        x-go-name: Type
+      updated_at:
+        $ref: '#/definitions/LocalTime'
+    type: object
+    x-go-package: gin-admin/internal/model
+  AdminMenuList:
+    items:
+      $ref: '#/definitions/AdminMenu'
+    type: array
+    x-go-package: gin-admin/internal/model
+  AdminPermission:
+    properties:
+      created_at:
+        $ref: '#/definitions/LocalTime'
+      http_method:
+        description: 请求方法
+        type: string
+        x-go-name: HttpMethod
+      http_path:
+        description: 请求路径
+        type: string
+        x-go-name: HttpPath
+      id:
+        format: uint64
+        type: integer
+        x-go-name: ID
+      name:
+        description: 权限名称
+        type: string
+        x-go-name: Name
+      updated_at:
+        $ref: '#/definitions/LocalTime'
+    type: object
+    x-go-package: gin-admin/internal/model
+  AdminPermissionList:
+    properties:
+      items:
+        description: 当前页数据
+        items:
+          $ref: '#/definitions/AdminPermission'
+        type: array
+        x-go-name: Items
+      last_page:
+        description: 总页数
+        format: int64
+        type: integer
+        x-go-name: LastPage
+      page:
+        description: 页数
+        format: int64
+        type: integer
+        x-go-name: Page
+      page_size:
+        description: 每页条数
+        format: int64
+        type: integer
+        x-go-name: PageSize
+      total:
+        description: 总条数
+        format: int64
+        type: integer
+        x-go-name: Total
+    type: object
+    x-go-package: gin-admin/internal/model
+  AdminRole:
+    properties:
+      created_at:
+        $ref: '#/definitions/LocalTime'
+      id:
+        format: uint64
+        type: integer
+        x-go-name: ID
+      menus:
+        items:
+          $ref: '#/definitions/AdminMenu'
+        type: array
+        x-go-name: Menus
+      permissions:
+        items:
+          $ref: '#/definitions/AdminPermission'
+        type: array
+        x-go-name: Permissions
+      role_name:
+        type: string
+        x-go-name: RoleName
+      updated_at:
+        $ref: '#/definitions/LocalTime'
+    type: object
+    x-go-package: gin-admin/internal/model
+  AdminUser:
+    properties:
+      avatar:
+        description: 头像
+        type: string
+        x-go-name: Avatar
+      created_at:
+        $ref: '#/definitions/LocalTime'
+      id:
+        format: uint64
+        type: integer
+        x-go-name: ID
+      is_super:
+        description: 是否为超级管理员，1是，0否
+        format: uint8
+        type: integer
+        x-go-name: IsSuper
+      nickname:
+        description: 昵称
+        type: string
+        x-go-name: Nickname
+      role_id:
+        description: 角色id
+        format: uint64
+        type: integer
+        x-go-name: RoleID
+      updated_at:
+        $ref: '#/definitions/LocalTime'
+      username:
+        description: 用户名
+        type: string
+        x-go-name: Username
+    type: object
+    x-go-package: gin-admin/internal/model
+  AdminUserList:
+    properties:
+      items:
+        description: 当前页数据
+        items:
+          $ref: '#/definitions/AdminUser'
+        type: array
+        x-go-name: Items
+      last_page:
+        description: 总页数
+        format: int64
+        type: integer
+        x-go-name: LastPage
+      page:
+        description: 当前页数
+        format: int64
+        type: integer
+        x-go-name: Page
+      page_size:
+        description: 没页条数
+        format: int64
+        type: integer
+        x-go-name: PageSize
+      total:
+        description: 总条数
+        format: int64
+        type: integer
+        x-go-name: Total
+    type: object
+    x-go-package: gin-admin/internal/model
+  ErrResponse:
+    properties:
+      code:
+        description: 错误码
+        format: int64
+        type: integer
+        x-go-name: Code
+      details:
+        description: 详细信息
+        items:
+          type: string
+        type: array
+        x-go-name: Details
+      msg:
+        description: 错误信息
+        type: string
+        x-go-name: Msg
+    type: object
+    x-go-package: gin-admin/pkg/app
+  LocalTime:
+    format: date-time
+    type: string
+    x-go-package: gin-admin/internal/model
+host: localhost:8000
+info:
+  title: Gin Admin API.
+  version: 0.0.1
+paths:
+  /administor:
+    get:
+      description: 账号列表
+      operationId: AdminUserList
+      parameters:
+      - description: 当前页数
+        format: int64
+        in: query
+        name: Page
+        type: integer
+      - description: 每页条数
+        format: int64
+        in: query
+        name: PageSize
+        type: integer
+      responses:
+        "200":
+          $ref: '#/responses/adminListResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 管理员账号管理
+    post:
+      description: 添加账号
+      operationId: CreateAdminUser
+      parameters:
+      - in: query
+        name: username
+        required: true
+        type: string
+        x-go-name: Username
+      - description: 昵称
+        in: query
+        name: nickname
+        type: string
+        x-go-name: Nickname
+      - in: query
+        name: password
+        required: true
+        type: string
+        x-go-name: Password
+      - description: 头像
+        in: query
+        name: avatar
+        type: string
+        x-go-name: Avatar
+      - description: 是否为超级管理员，1是，0 否
+        format: uint8
+        in: query
+        name: is_super
+        type: integer
+        x-go-name: IsSuper
+      - description: 角色ID
+        format: uint64
+        in: query
+        name: role_id
+        type: integer
+        x-go-name: RoleID
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 管理员账号管理
+  /administor/{id}:
+    delete:
+      description: 删除账号
+      operationId: DeleteAdminUser
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 管理员账号管理
+    get:
+      description: 账号详情
+      operationId: AdminUser
+      responses:
+        "200":
+          $ref: '#/responses/adminUserResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 管理员账号管理
+    put:
+      description: 修改账号
+      operationId: UpdateAdminUser
+      parameters:
+      - in: query
+        name: nickname
+        type: string
+        x-go-name: Nickname
+      - in: query
+        name: password
+        type: string
+        x-go-name: Password
+      - in: query
+        name: avatar
+        type: string
+        x-go-name: Avatar
+      - format: uint8
+        in: query
+        name: is_super
+        type: integer
+        x-go-name: IsSuper
+      - format: uint64
+        in: query
+        name: role_id
+        type: integer
+        x-go-name: RoleID
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 管理员账号管理
+  /administor/info:
+    get:
+      description: 登录用户详情
+      operationId: AdminUser
+      responses:
+        "200":
+          $ref: '#/responses/adminUserResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 管理员账号管理
+  /captcha:
+    get:
+      description: 获取验证码
+      operationId: Captcha
+      parameters:
+      - description: 图片宽度
+        format: int64
+        in: query
+        name: width
+        type: integer
+        x-go-name: Width
+      - description: 图片高度
+        format: int64
+        in: query
+        name: height
+        type: integer
+        x-go-name: Height
+      - description: 验证码长度
+        format: int64
+        in: query
+        name: length
+        type: integer
+        x-go-name: Length
+      responses:
+        "200":
+          $ref: '#/responses/getCaptchaResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 基础接口
+  /login:
+    post:
+      description: 登录
+      operationId: Login
+      parameters:
+      - in: query
+        name: username
+        type: string
+        x-go-name: Username
+      - in: query
+        name: password
+        type: string
+        x-go-name: Password
+      - in: query
+        name: captcha_id
+        type: string
+        x-go-name: CaptchaId
+      - in: query
+        name: captcha
+        type: string
+        x-go-name: Captcha
+      responses:
+        "200":
+          $ref: '#/responses/loginResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      tags:
+      - 基础接口
+  /menu:
+    get:
+      description: 菜单列表
+      operationId: AdminMenuList
+      responses:
+        "200":
+          $ref: '#/responses/menuListResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 菜单管理
+    post:
+      description: 添加菜单
+      operationId: CreateAdminMenu
+      parameters:
+      - format: uint64
+        in: query
+        name: parent_id
+        type: integer
+        x-go-name: ParentID
+      - in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - in: query
+        name: permission
+        type: string
+        x-go-name: Permission
+      - in: query
+        name: path
+        type: string
+        x-go-name: Path
+      - format: uint8
+        in: query
+        name: type
+        type: integer
+        x-go-name: Type
+      - in: query
+        name: icon
+        type: string
+        x-go-name: Icon
+      - in: query
+        name: component
+        type: string
+        x-go-name: Component
+      - format: uint64
+        in: query
+        name: sort
+        type: integer
+        x-go-name: Sort
+      - format: uint8
+        in: query
+        name: is_disabled
+        type: integer
+        x-go-name: IsDisabled
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 菜单管理
+  /menu/{id}:
+    delete:
+      description: 删除菜单
+      operationId: DeleteAdminMenu
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 菜单管理
+    get:
+      description: 菜单详情
+      operationId: AdminMenu
+      responses:
+        "200":
+          $ref: '#/responses/adminMenuResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 菜单管理
+    put:
+      description: 修改菜单
+      operationId: UpdateAdminMenu
+      parameters:
+      - format: uint64
+        in: query
+        name: parent_id
+        type: integer
+        x-go-name: ParentID
+      - in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - in: query
+        name: permission
+        type: string
+        x-go-name: Permission
+      - in: query
+        name: path
+        type: string
+        x-go-name: Path
+      - format: uint8
+        in: query
+        name: type
+        type: integer
+        x-go-name: Type
+      - in: query
+        name: icon
+        type: string
+        x-go-name: Icon
+      - in: query
+        name: component
+        type: string
+        x-go-name: Component
+      - format: uint64
+        in: query
+        name: sort
+        type: integer
+        x-go-name: Sort
+      - format: uint8
+        in: query
+        name: is_disabled
+        type: integer
+        x-go-name: IsDisabled
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 菜单管理
+  /menu/user_menus:
+    get:
+      description: 获取用户菜单
+      operationId: AdminUserMenu
+      responses:
+        "200":
+          $ref: '#/responses/menuListResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 菜单管理
+  /permission:
+    get:
+      description: 权限列表
+      operationId: AdminPermissionList
+      parameters:
+      - description: 当前页数
+        format: int64
+        in: query
+        name: Page
+        type: integer
+      - description: 每页条数
+        format: int64
+        in: query
+        name: PageSize
+        type: integer
+      responses:
+        "200":
+          $ref: '#/responses/roleListResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 权限管理
+    post:
+      description: 添加权限
+      operationId: CreateAdminPermission
+      parameters:
+      - description: 权限名称
+        in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - description: 请求路径
+        in: query
+        name: http_path
+        type: string
+        x-go-name: HttpPath
+      - description: 请求方法
+        in: query
+        name: http_method
+        type: string
+        x-go-name: HttpMethod
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 权限管理
+  /permission/{id}:
+    delete:
+      description: 删除权限
+      operationId: DeleteAdminPermission
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 权限管理
+    get:
+      description: 权限详情
+      operationId: AdminPermission
+      responses:
+        "200":
+          $ref: '#/responses/adminPermissionResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 权限管理
+    put:
+      description: 修改权限
+      operationId: UpdateAdminPermission
+      parameters:
+      - description: 权限名称
+        in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - description: 请求路径
+        in: query
+        name: http_path
+        type: string
+        x-go-name: HttpPath
+      - description: 请求方法
+        in: query
+        name: http_method
+        type: string
+        x-go-name: HttpMethod
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 权限管理
+  /permission/all:
+    get:
+      description: 所有权限列表
+      operationId: AllPermission
+      responses:
+        "200":
+          $ref: '#/responses/allPermissionResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 权限管理
+  /role:
+    get:
+      description: 角色列表
+      operationId: AdminRoleList
+      responses:
+        "200":
+          $ref: '#/responses/roleListResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 角色管理
+    post:
+      description: 添加角色
+      operationId: CreateAdminRole
+      parameters:
+      - in: query
+        name: role_name
+        required: true
+        type: string
+        x-go-name: RoleName
+      - description: 菜单id
+        in: query
+        items:
+          format: uint64
+          type: integer
+        name: menus
+        type: array
+        x-go-name: Menus
+      - description: 权限id
+        in: query
+        items:
+          format: uint64
+          type: integer
+        name: permissions
+        type: array
+        x-go-name: Permissions
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 角色管理
+  /role/{id}:
+    delete:
+      description: 删除角色
+      operationId: DeleteAdminRole
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 角色管理
+    get:
+      description: 角色详情
+      operationId: AdminRole
+      responses:
+        "200":
+          $ref: '#/responses/adminRoleResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 角色管理
+    put:
+      description: 修改角色
+      operationId: UpdateAdminRole
+      parameters:
+      - in: query
+        name: role_name
+        required: true
+        type: string
+        x-go-name: RoleName
+      - description: 菜单id
+        in: query
+        items:
+          format: uint64
+          type: integer
+        name: menus
+        type: array
+        x-go-name: Menus
+      - description: 权限id
+        in: query
+        items:
+          format: uint64
+          type: integer
+        name: permissions
+        type: array
+        x-go-name: Permissions
+      responses:
+        "200":
+          $ref: '#/responses/okResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: []
+      tags:
+      - 角色管理
+  /upload/file:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上传文件
+      operationId: UploadFile
+      parameters:
+      - description: 文件
+        in: formData
+        name: file
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/uploadFileResponse'
+        default:
+          $ref: '#/responses/errResponse'
+      security:
+      - Bearer: null
+      tags:
+      - 基础接口
+produces:
+- application/json
+responses:
+  adminListResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/AdminUserList'
+  adminMenuResponse:
+    description: ""
+    headers:
+      Component:
+        type: string
+      Icon:
+        type: string
+      IsDisabled:
+        format: uint8
+        type: integer
+      Name:
+        type: string
+      ParentID:
+        format: uint64
+        type: integer
+      Path:
+        type: string
+      Permission:
+        type: string
+      Sort:
+        format: uint64
+        type: integer
+      Type:
+        format: uint8
+        type: integer
+  adminPermissionResponse:
+    description: ""
+    headers:
+      created_at: {}
+      http_method:
+        description: 请求方法
+        type: string
+      http_path:
+        description: 请求路径
+        type: string
+      id:
+        format: uint64
+        type: integer
+      name:
+        description: 权限名称
+        type: string
+      updated_at: {}
+    schema:
+      $ref: '#/definitions/LocalTime'
+  adminRoleResponse:
+    description: ""
+    headers:
+      id:
+        description: 角色id
+        format: uint64
+        type: integer
+      menus:
+        description: 菜单id
+        items:
+          format: uint64
+          type: integer
+        type: array
+      permissions:
+        description: 权限id
+        items:
+          format: uint64
+          type: integer
+        type: array
+      role_name:
+        description: 角色名称
+        type: string
+  adminUserResponse:
+    description: ""
+    headers:
+      avatar:
+        description: 头像
+        type: string
+      created_at: {}
+      id:
+        format: uint64
+        type: integer
+      is_super:
+        description: 是否为超级管理员，1是，0否
+        format: uint8
+        type: integer
+      nickname:
+        description: 昵称
+        type: string
+      role_id:
+        description: 角色id
+        format: uint64
+        type: integer
+      updated_at: {}
+      username:
+        description: 用户名
+        type: string
+    schema:
+      $ref: '#/definitions/LocalTime'
+  allPermissionResponse:
+    description: ""
+    headers:
+      Body:
+        items:
+          $ref: '#/definitions/AdminPermission'
+        type: array
+  errResponse:
+    description: 发生错误响应
+    schema:
+      $ref: '#/definitions/ErrResponse'
+  getCaptchaResponse:
+    description: 获取验证码响应
+    headers:
+      captcha:
+        description: 验证码
+        type: string
+      captcha_id:
+        description: 验证码id
+        type: string
+  loginResponse:
+    description: 登录成功返回
+    headers:
+      Body: {}
+    schema:
+      properties:
+        token:
+          type: string
+          x-go-name: Token
+      type: object
+  menuListResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/AdminMenuList'
+  okResponse:
+    description: ""
+    headers:
+      Body: {}
+    schema:
+      type: object
+  roleListResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/AdminPermissionList'
+      items:
+        $ref: '#/definitions/AdminRole'
+      type: array
+  uploadFileResponse:
+    description: 上传文件响应
+    headers:
+      host:
+        description: 访问host
+        type: string
+      path:
+        description: 文件路径
+        type: string
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,39 @@
+Server:
+  RunMode: debug
+  HttpPort: 8000
+  ReadTimeout: 60
+  WriteTimeout: 60
+App:
+  DefaultPageSize: 10
+  MaxPageSize: 100
+  LogSavePath: storage/logs
+  LogFileName: app
+  LogFileExt: .log
+  UploadSavePath: storage/uploads
+  UploadServerUrl: http://127.0.0.1:8000/static
+  UploadImageMaxSize: 5 # MB
+  UploadImageAllowExts:
+    - .jpg
+    - .jpeg
+    - .png
+Database:
+  DBType: mysql
+  Username: root
+  Password: root
+  Host: 127.0.0.1:3306
+  DBName: gin-admin
+  TablePrefix:
+  Charset: utf8mb4
+  ParseTime: true
+  MaxIdleConns: 10
+  MaxOpenConns: 30
+Logger:
+  Development: true # 是否是开发模式。如果是开发模式，会对DPanicLevel进行堆栈跟踪。
+  Level: debug # 日志级别，优先级从低到高依次为：debug, info, warn, error, dpanic, panic, fatal。
+  EnableColor: true # 是否开启颜色输出，true:是，false:否
+  DisableCaller: false # 是否开启 caller，如果开启会在日志中显示调用日志所在的文件、函数和行号
+  DisableStacktrace: false # 是否再panic及以上级别禁止打印堆栈信息
+JWT:
+  Secret: ikp9t0ni
+  Issuer: gin-admin
+  Expire: 604800
