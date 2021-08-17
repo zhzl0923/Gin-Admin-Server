@@ -23,4 +23,8 @@ func Setup() {
 		log.Fatalf("setup trans failed, err:%v\n", err)
 	}
 
+	err = setupTracer()
+	if err != nil {
+		log.Fatalf("setup tracer failed, err:%v\n", err)
+	}
 }
